@@ -3,7 +3,6 @@ from visionhsv import Vision
 from hsvfilter import HsvFilter
 from gamecapture import GameCapture
 
-
 # This script would not exist without the excellent work of Ben from Learn Code By Gaming.
 # Go check him out ! https://www.youtube.com/c/LearnCodeByGaming
 # Huge thanks to him for making coding fun :)
@@ -18,19 +17,30 @@ amongus_screenshot.get_window_handle()
 # Initialize variables
 colors = ["red", "blue", "green", "pink", "orange", "yellow", "black", "white", "purple", "brown", "cyan",
           "lime"]
+rooms = ["cafeteria", "medbay", "upper_engine", "reactor", "security", "lower_engine", "electrical", "storage", "admin",
+         "communications", "shields", "navigation", "o2", "weapons"]
 trackers = {}
 processed_images = {}
 rectangles = {}
 points = {}
 thresholds = {}
+positions = {}
 
-# Initialize player trackers and variables
+# Initialize player trackers
 for color in colors:
     trackers.update({color: Vision('img/' + color + '_small.png')})
     processed_images.update({color: None})
     rectangles.update({color: None})
     points.update({color: None})
     thresholds.update({color: 0.5})
+    positions.update({color: None})
+
+# Initialize room trackers
+for room in rooms:
+    trackers[room] = Vision('img/' + room + '.png')
+    processed_images.update({room: None})
+    rectangles.update({room: None})
+    points.update({room: None})
 
 # Threshold adjustments for specific colors
 thresholds["green"] = 0.4
@@ -43,6 +53,7 @@ thresholds["purple"] = 0.4
 thresholds["brown"] = 0.6  # brown detected over orange, overall bad accuracy for brown
 thresholds["cyan"] = 0.45
 thresholds["lime"] = 0.4  # lime detected over green and vice-versa
+thresholds["room"] = 0.72  # cafeteria + o2 problem, communications + o2 problem : crop beginning of word
 
 # HSV filters to be applied
 filters = {
@@ -57,13 +68,23 @@ filters = {
     "purple": HsvFilter(129, 190, 0, 134, 255, 255, 0, 0, 0, 0),
     "brown": HsvFilter(6, 184, 0, 18, 255, 255, 0, 0, 0, 0),
     "cyan": HsvFilter(83, 198, 0, 95, 255, 255, 0, 0, 0, 0),
-    "lime": HsvFilter(52, 182, 0, 70, 255, 255, 0, 0, 0, 0)
+    "lime": HsvFilter(52, 182, 0, 70, 255, 255, 0, 0, 0, 0),
+    "room": HsvFilter(0, 0, 0, 0, 0, 255, 0, 0, 0, 0)
 }
 
 while True:
 
+    # filters["room"] = trackers["room"].get_hsv_filter_from_controls()
+
     # Get current frame and resize it so the process is faster
     screenshot = amongus_screenshot.get_screenshot(256, 144)
+
+    # [164:173, 70:188]
+    # Detect room
+    for room in rooms:
+        processed_images[room] = trackers[room].apply_hsv_filter(screenshot, filters["room"])
+        rectangles[room] = trackers[room].find(processed_images[room], threshold=thresholds["room"], max_results=1)
+        points[room] = trackers[room].get_click_points(rectangles[room])
 
     # Get detected points for every color
     for color in colors:
@@ -71,12 +92,22 @@ while True:
         rectangles[color] = trackers[color].find(processed_images[color], threshold=thresholds[color], max_results=1)
         points[color] = trackers[color].get_click_points(rectangles[color])
 
+        # Draw a cross and write the name of the room
+    for room in rooms:
+        trackers[room].draw_crosshairs(screenshot, points[room], (255, 0, 255))
+        if len(points[room]):
+            cv.putText(screenshot, room, (points[room][0][0] + 1, points[room][0][1] - 1),
+                       cv.FONT_HERSHEY_PLAIN, 0.7, (255, 0, 255), 1, cv.LINE_AA)
+
     # Draw a cross and write the color detected for every color
     for color in colors:
         trackers[color].draw_crosshairs(screenshot, points[color], (0, 255, 0))
         if len(points[color]):
             cv.putText(screenshot, color, (points[color][0][0] + 1, points[color][0][1] - 1), cv.FONT_HERSHEY_PLAIN,
                        0.7, (0, 255, 0), 1, cv.LINE_AA)
+
+    # Display processed image
+    # cv.imshow('Processed screen', processed_images[room])
 
     # Display result image
     cv.imshow('Tracking screen', cv.resize(screenshot, (1280, 720)))
