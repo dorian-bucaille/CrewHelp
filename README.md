@@ -1,14 +1,14 @@
 # CrewHelp (WIP)
 Tool designed to help crewmates expose imposters in Among Us.
-This script would not exist without the excellent work of Ben from Learn Code By Gaming. Go check him out ! https://www.youtube.com/c/LearnCodeByGaming
+This script would not exist without the excellent work of Ben from Learn Code By Gaming. Go [check him out !](https://www.youtube.com/c/LearnCodeByGaming)
 
 ## What does this tool do ?
 The purpose of this tool is to display a map giving the last positions of the players encountered at each meeting. For the moment it's not functional, but I'll do my best to make it work.
 
 ## WIP
-For the moment, only basic player detection is possible. Here are some screenshots of the porgram :
-![alt text](https://github.com/dorian-bucaille/CrewHelp/blob/main/illustration/demo_medbay.png?raw=true)
-![alt text](https://github.com/dorian-bucaille/CrewHelp/blob/main/illustration/demo_nav.png?raw=true)
+Right now only basic player detection is possible. Here are some screenshots of the program :
+![demo_medbay.png](https://github.com/dorian-bucaille/CrewHelp/blob/main/illustration/demo_medbay.png?raw=true)
+![demo_nav.png](https://github.com/dorian-bucaille/CrewHelp/blob/main/illustration/demo_nav.png?raw=true)
 
 ## To do
 - [x] Basic player detection
