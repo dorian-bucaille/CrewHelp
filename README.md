@@ -12,7 +12,7 @@ Right now only basic player detection is possible. Here are some screenshots of 
 
 ## To do
 - [x] Basic player detection
-- [ ] Retrieve players' positions and timings
+- [x] Retrieve players' positions and timings
 - [ ] Display a map with players' positions and timings
 - [ ] Advanced player detection with ML (cascade)
 - [ ] Show up the map when meetings occur
