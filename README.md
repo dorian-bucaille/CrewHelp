@@ -19,5 +19,5 @@ Right now only basic player detection is possible. Here are some screenshots of 
 - [ ] Performance improvements with multithreading
 
 ## Other
-I'm fully aware that image recognition is absolutely not the best way to track players in Among Us. This project is mainly a way for me to learn new techniques and librearies in Python.
+I'm fully aware that image recognition is absolutely not the best way to track players in Among Us. This project is mainly a way for me to learn new techniques and libraries in Python.
 I do not encourage people to cheat in online games and am not responsible for any abuse. __Do not use this script in online games__.
