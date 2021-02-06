@@ -4,6 +4,7 @@ from hsvfilter import HsvFilter
 from gamecapture import GameCapture
 from time import time
 import keyboard
+from gui.map import Map
 
 # This script would not exist without the excellent work of Ben from Learn Code By Gaming.
 # Go check him out ! https://www.youtube.com/c/LearnCodeByGaming
@@ -141,5 +142,11 @@ for color in colors:
             print(f'{color} last seen {int(last_seen[color])} seconds ago.')
     else:
         print(f'{color} not seen.')
+
+actual_map = Map(positions, last_seen)
+actual_map.set_markers()
+actual_map.display_markers()
+actual_map.display_map()
+
 
 print('Done.')
