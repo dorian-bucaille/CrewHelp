@@ -1,5 +1,5 @@
 import cv2 as cv
-
+import cons.cst
 
 # Class used to display the map and trackers.
 class Map:
@@ -87,4 +87,4 @@ class Map:
                     # Display text
                     cv.putText(self.map, color + ' : ' + str(int(self.last_seen[color])) + 's',
                                (self.markers[color][0], self.markers[color][1] + y_shift*tmp[self.markers[color]]),
-                               cv.FONT_HERSHEY_PLAIN, 1.1, (0, 255, 0), 1, cv.LINE_AA)
+                               cv.FONT_HERSHEY_PLAIN, 1.1, cons.cst.bgr_colors[color], 1, cv.LINE_AA)
