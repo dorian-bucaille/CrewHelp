@@ -14,9 +14,10 @@ Right now only basic player detection is possible. Here are some screenshots of 
 - [x] Basic player detection
 - [x] Retrieve players' positions and timings
 - [x] Display a map with players' positions and timings
-- [ ] Show up the map when meetings occur
-- [ ] Improve map display (colors, crewmate icons)
+- [x] Show up the map when meetings occur
+- [ ] Clean code up
 - [ ] Advanced player detection with ML (cascade)
+- [ ] Improve map display (colors, crewmate icons)
 - [ ] Performance improvements with multithreading
 
 ## Other
