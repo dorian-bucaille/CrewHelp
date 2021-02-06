@@ -48,7 +48,7 @@ class Map:
 
     # Display the map
     def display_map(self):
-        cv.imshow('Map', self.map)
+        cv.imshow('CrewHelp map', self.map)
         cv.waitKey(0)  # waits until a key is pressed
         cv.destroyAllWindows()  # destroys the window showing image
 

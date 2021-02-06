@@ -3,12 +3,126 @@ from visionhsv import Vision
 from hsvfilter import HsvFilter
 from gamecapture import GameCapture
 from time import time
-import keyboard
 from gui.map import Map
 
-# This script would not exist without the excellent work of Ben from Learn Code By Gaming.
-# Go check him out ! https://www.youtube.com/c/LearnCodeByGaming
-# Huge thanks to him for making coding fun :)
+# Debugging parameters
+detectionscreen = False  # Display detection screen
+processedscreen = None  # Display processed image
+hsv_sliders = False  # Display GUI for HSV processing
+
+
+# Create and initialize variables
+colors = ["red", "blue", "green", "pink", "orange", "yellow", "black", "white", "purple", "brown", "cyan",
+          "lime"]
+rooms = ["cafeteria", "medbay", "upper_engine", "reactor", "security", "lower_engine", "electrical", "storage", "admin",
+         "communications", "shields", "navigation", "o2", "weapons"]
+
+trackers, processed_images, rectangles, points, thresholds, positions, timings, last_seen = {}, {}, {}, {}, {}, {}, {}, \
+                                                                                            {}
+
+
+# Initialize trackers
+def init_trackers(tracked_obj, pos=False):
+    if type(tracked_obj) == list:
+        for t in tracked_obj:
+            trackers.update({t: Vision('img/' + t + '.png')})
+            processed_images.update({t: None})
+            rectangles.update({t: None})
+            points.update({t: None})
+            thresholds.update({t: 0.5})
+            if pos:
+                positions.update({t: None})
+                timings.update({t: None})
+                last_seen.update({t: None})
+    else:
+        trackers.update({tracked_obj: Vision('img/' + tracked_obj + '.png')})
+        processed_images.update({tracked_obj: None})
+        rectangles.update({tracked_obj: None})
+
+
+# Return True if an event has been triggered
+def event_detected(screencapture, tracker, imgfilter, threshold=0.5, getrectangle=False):
+    processedimg = tracker.apply_hsv_filter(screencapture, imgfilter)
+    rectangle = tracker.find(processedimg, threshold=threshold, max_results=1)
+    if len(rectangle):
+        if getrectangle:
+            return rectangle
+        else:
+            return True
+    else:
+        return False
+
+
+# Print last positions of encountered players.
+def print_positions():
+    print('--- Recap ---')
+    for col in colors:
+        if last_seen[col] and positions[col]:
+            if int(last_seen[col]) == 0 or int(last_seen[col]) == 1:
+                print(f'{col} last seen {int(last_seen[col])} second ago in {positions[col]}.')
+            else:
+                print(f'{col} last seen {int(last_seen[col])} seconds ago in {positions[col]}.')
+        elif last_seen[col]:
+            if int(last_seen[col]) == 0 or int(last_seen[col]) == 1:
+                print(f'{col} last seen {int(last_seen[col])} second ago.')
+            else:
+                print(f'{col} last seen {int(last_seen[col])} seconds ago.')
+        else:
+            print(f'{col} not seen.')
+
+
+# Initialize color, room and meeting trackers
+init_trackers(colors, pos=True)
+init_trackers(rooms)
+init_trackers('meeting')
+
+# Threshold adjustments for specific colors
+thresholds["red"] = 0.5  # Seems OK
+thresholds["green"] = 0.5  # OK
+thresholds["pink"] = 0.4
+thresholds["orange"] = 0.4  # OK
+thresholds["yellow"] = 0.53  # OK but not 100% accurate. Had to lower threshold because of empty bin storage task.
+thresholds["black"] = 0.5  # OK
+thresholds["white"] = 0.4
+thresholds["purple"] = 0.4
+thresholds["brown"] = 0.45  # OK
+thresholds["cyan"] = 0.45
+thresholds["lime"] = 0.3  # OK
+thresholds["room"] = 0.72  # OK
+
+# BGR for every color
+bgr_colors = {
+    "red": (0, 0, 255),
+    "blue": (255, 0, 0),
+    "green": (0, 255, 0),
+    "pink": (255, 0, 255),
+    "orange": (0, 127, 255),
+    "yellow": (0, 255, 255),
+    "black": (255, 255, 255),
+    "white": (0, 0, 0),
+    "purple": (191, 0, 191),
+    "brown": (20, 70, 120),
+    "cyan": (255, 255, 0),
+    "lime": (0, 255, 0)
+}
+
+# HSV filters to be applied
+filters = {
+    "red": HsvFilter(0, 229, 0, 179, 237, 255, 0, 0, 255, 0),
+    "blue": HsvFilter(114, 221, 0, 119, 255, 255, 0, 0, 0, 0),
+    "green": HsvFilter(67, 218, 0, 76, 222, 255, 0, 0, 0, 0),
+    "pink": HsvFilter(146, 160, 0, 161, 255, 255, 0, 0, 0, 0),
+    "orange": HsvFilter(6, 219, 0, 20, 255, 255, 0, 0, 0, 0),
+    "yellow": HsvFilter(19, 164, 184, 30, 213, 255, 0, 0, 0, 0),
+    "black": HsvFilter(104, 49, 36, 116, 55, 255, 0, 0, 255, 0),
+    "white": HsvFilter(108, 22, 176, 113, 95, 255, 0, 0, 0, 0),
+    "purple": HsvFilter(129, 190, 0, 134, 255, 255, 0, 0, 0, 0),
+    "brown": HsvFilter(6, 186, 0, 17, 198, 255, 0, 0, 255, 0),
+    "cyan": HsvFilter(83, 198, 0, 95, 255, 255, 0, 0, 0, 0),
+    "lime": HsvFilter(55, 193, 0, 56, 194, 255, 0, 0, 255, 0),
+    "room": HsvFilter(0, 0, 0, 0, 0, 255, 0, 0, 0, 0),
+    "meeting": HsvFilter(0, 0, 209, 179, 255, 255, 0, 0, 0, 0)
+}
 
 # Set coordinates of Among Us window
 amongus_screenshot = GameCapture('Among Us')
@@ -17,136 +131,60 @@ amongus_screenshot = GameCapture('Among Us')
 # We are doing this because recording game windows does not work with the win32 library (freezes on first frame)
 amongus_screenshot.get_window_handle()
 
-# Initialize variables
-colors = ["red", "blue", "green", "pink", "orange", "yellow", "black", "white", "purple", "brown", "cyan",
-          "lime"]
-rooms = ["cafeteria", "medbay", "upper_engine", "reactor", "security", "lower_engine", "electrical", "storage", "admin",
-         "communications", "shields", "navigation", "o2", "weapons"]
-trackers = {}
-processed_images = {}
-rectangles = {}
-points = {}
-thresholds = {}
-positions = {}
-timings = {}
-last_seen = {}
-current_room = None
-
-# Initialize player trackers
-for color in colors:
-    trackers.update({color: Vision('img/' + color + '_small.png')})
-    processed_images.update({color: None})
-    rectangles.update({color: None})
-    points.update({color: None})
-    thresholds.update({color: 0.5})
-    positions.update({color: None})
-    timings.update({color: None})
-    last_seen.update({color: None})
-
-# Initialize room trackers
-for room in rooms:
-    trackers.update({room: Vision('img/' + room + '.png')})
-    processed_images.update({room: None})
-    rectangles.update({room: None})
-    points.update({room: None})
-
-
-# Initialize meeting detector
-trackers.update({'meeting': Vision('img/meeting.png')})
-processed_images.update({'meeting': None})
-rectangles.update({'meeting': None})
-
-# Threshold adjustments for specific colors
-thresholds["green"] = 0.4
-thresholds["pink"] = 0.4
-thresholds["orange"] = 0.4  # black and brown detected @upper/lower engine (+ vents for black)
-thresholds["yellow"] = 0.5  # yellow not so good (@shields for example)
-thresholds["black"] = 0.61
-thresholds["white"] = 0.4
-thresholds["purple"] = 0.4
-thresholds["brown"] = 0.6  # brown detected over orange, overall bad accuracy for brown
-thresholds["cyan"] = 0.45
-thresholds["lime"] = 0.4  # lime detected over green and vice-versa
-thresholds["room"] = 0.72  # cafeteria + o2 problem, communications + o2 problem : crop beginning of word
-
-# HSV filters to be applied
-filters = {
-    "red": HsvFilter(0, 229, 0, 0, 255, 255, 0, 0, 0, 0),
-    "blue": HsvFilter(114, 221, 0, 119, 255, 255, 0, 0, 0, 0),
-    "green": HsvFilter(64, 215, 0, 78, 255, 255, 0, 0, 0, 0),
-    "pink": HsvFilter(146, 160, 0, 161, 255, 255, 0, 0, 0, 0),
-    "orange": HsvFilter(6, 219, 0, 20, 255, 255, 0, 0, 0, 0),
-    "yellow": HsvFilter(19, 160, 0, 31, 255, 255, 0, 0, 0, 0),
-    "black": HsvFilter(104, 48, 0, 116, 63, 83, 0, 0, 0, 0),
-    "white": HsvFilter(108, 22, 176, 113, 95, 255, 0, 0, 0, 0),
-    "purple": HsvFilter(129, 190, 0, 134, 255, 255, 0, 0, 0, 0),
-    "brown": HsvFilter(6, 184, 0, 18, 255, 255, 0, 0, 0, 0),
-    "cyan": HsvFilter(83, 198, 0, 95, 255, 255, 0, 0, 0, 0),
-    "lime": HsvFilter(52, 182, 0, 70, 255, 255, 0, 0, 0, 0),
-    "room": HsvFilter(0, 0, 0, 0, 0, 255, 0, 0, 0, 0),
-    "meeting": HsvFilter(0, 0, 209, 179, 255, 255, 0, 0, 0, 0)
-}
-
-# trackers['meeting'].init_control_gui()
-
-
-# Return True if an event has been triggered
-def meeting_detected(screencapture, tracker, imgfilter, threshold=0.5):
-    processed = tracker.apply_hsv_filter(screencapture, imgfilter)
-    rectangle = tracker.find(processed, threshold=threshold, max_results=1)
-    if len(rectangle):
-        return True
-    else:
-        return False
-
-
+# Init HSV GUI
+if hsv_sliders:
+    trackers[processedscreen].init_control_gui()
 
 while True:
+    # Reset current room
     current_room = None
-    # filters["meeting"] = trackers["meeting"].get_hsv_filter_from_controls()
 
     # Get current frame and resize it so the process is faster
     screenshot = amongus_screenshot.get_screenshot(256, 144)
 
     # Detect room
     for room in rooms:
-        processed_images[room] = trackers[room].apply_hsv_filter(screenshot, filters["room"])
-        rectangles[room] = trackers[room].find(processed_images[room], threshold=thresholds["room"], max_results=1)
-        points[room] = trackers[room].get_click_points(rectangles[room])
-        if len(points[room]):
+        if event_detected(screenshot, trackers[room], filters['room'], threshold=thresholds['room']):
             current_room = room
+            if detectionscreen:
+                rectangles[room] = event_detected(screenshot, trackers[room], filters['room'],
+                                                  threshold=thresholds['room'], getrectangle=True)
+                points[room] = trackers[room].get_click_points(rectangles[room])
+                cv.putText(screenshot, room, (points[room][0][0] + 1, points[room][0][1] - 1),
+                           cv.FONT_HERSHEY_PLAIN, 0.7, (255, 255, 255), 1, cv.LINE_AA)
 
-    # Get detected points for every color
-    for color in colors:
-        processed_images[color] = trackers[color].apply_hsv_filter(screenshot, filters[color])
-        rectangles[color] = trackers[color].find(processed_images[color], threshold=thresholds[color], max_results=1)
-        points[color] = trackers[color].get_click_points(rectangles[color])
+    # If in a room, detect players
+    if current_room:
+        for color in colors:
+            # Check if color is detected
+            rectangles[color] = event_detected(screenshot, trackers[color], filters[color], threshold=thresholds[color],
+                                               getrectangle=True)
+            # If so, update position and timing
+            if rectangles[color] is not False:
+                positions[color] = current_room
+                timings[color] = time()
 
-        # Update player location
-        if len(points[color]):
-            positions[color] = current_room
-            timings[color] = time()
+                # Draw a cross and write the color detected for every color
+                if detectionscreen:
+                    points[color] = trackers[color].get_click_points(rectangles[color])
+                    trackers[color].draw_crosshairs(screenshot, points[color], bgr_colors[color])
+                    cv.putText(screenshot, color, (points[color][0][0] + 1, points[color][0][1] - 1),
+                               cv.FONT_HERSHEY_PLAIN, 0.7, bgr_colors[color], 1, cv.LINE_AA)
 
-    # Draw a cross and write the color detected for every color
-    for color in colors:
-        trackers[color].draw_crosshairs(screenshot, points[color], (0, 255, 0))
-        if len(points[color]):
-            cv.putText(screenshot, color, (points[color][0][0] + 1, points[color][0][1] - 1), cv.FONT_HERSHEY_PLAIN,
-                       0.7, (0, 255, 0), 1, cv.LINE_AA)
+    # Display detection screen
+    if detectionscreen:
+        if processedscreen:
+            if hsv_sliders:
+                filters[processedscreen] = trackers[processedscreen].get_hsv_filter_from_controls()
+            processed = trackers[processedscreen].apply_hsv_filter(screenshot, filters[processedscreen])
+            cv.imshow('CrewHelp processed screen', processed)
+            cv.waitKey(1)
+        cv.imshow('CrewHelp tracking screen', cv.resize(screenshot, (1280, 720)))
+        cv.waitKey(1)
 
-    # Display processed image
-    # processed_images['meeting'] = trackers['meeting'].apply_hsv_filter(screenshot,
-    #                                                                       filters['meeting'])
-    # cv.imshow('Processed screen', processed_images['meeting'])
-
-    # Display result image
-    #
-
-    # Meeting detection
-    if meeting_detected(screenshot, trackers['meeting'], filters['meeting'], threshold=0.5):
-        print("Meeting detected !")
-    # Press 'q' to simulate this scenario
-    # if cv.waitKey(1) == ord('q'):
+    # Get out of loop if a meeting is detected
+    if event_detected(screenshot, trackers['meeting'], filters['meeting'], threshold=0.5):
+        print("--- Meeting detected ! ---\n")
         cv.destroyAllWindows()
         time_now = time()
         for color in colors:
@@ -155,23 +193,12 @@ while True:
         break
 
 # Print last positions of encountered players.
-for color in colors:
-    if last_seen[color] and positions[color]:
-        if int(last_seen[color]) == 0 or int(last_seen[color]) == 1:
-            print(f'{color} last seen {int(last_seen[color])} second ago in {positions[color]}.')
-        else:
-            print(f'{color} last seen {int(last_seen[color])} seconds ago in {positions[color]}.')
-    elif last_seen[color]:
-        if int(last_seen[color]) == 0 or int(last_seen[color]) == 1:
-            print(f'{color} last seen {int(last_seen[color])} second ago.')
-        else:
-            print(f'{color} last seen {int(last_seen[color])} seconds ago.')
-    else:
-        print(f'{color} not seen.')
+print_positions()
 
+# Display map and markers
 actual_map = Map(positions, last_seen)
 actual_map.set_markers()
 actual_map.display_markers()
 actual_map.display_map()
 
-print('Done.')
+exit(0)
