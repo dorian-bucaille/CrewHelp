@@ -16,11 +16,9 @@ Right now only basic player detection is possible. Here are some screenshots of 
 - [x] Display a map with players' positions and timings
 - [x] Show up the map when meetings occur
 - [x] Clean code up
-- [ ] Improve map display :
-  - [x] colors
-  - [ ] crewmate icons
+- [ ] Improve map display using QT
 - [ ] Performance improvements with multithreading
-(- [ ] Advanced player detection with ML (cascade))
+- [ ] Advanced player detection with ML (optional)
 
 ## Other
 I'm fully aware that image recognition is absolutely not the best way to track players in Among Us. This project is mainly a way for me to learn new techniques and libraries in Python.
