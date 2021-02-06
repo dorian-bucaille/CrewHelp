@@ -64,7 +64,7 @@ def print_positions():
             else:
                 print(f'{col} last seen {int(last_seen[col])} seconds ago.')
         else:
-            print(f'{col} not seen.')
+            print(f'{col} not seen in a room.')
 
 
 # Initialize color, room and meeting trackers
