@@ -3,6 +3,8 @@ from visionhsv import Vision
 from hsvfilter import HsvFilter
 from gamecapture import GameCapture
 from time import time
+import keyboard
+from gui.map import Map
 
 # This script would not exist without the excellent work of Ben from Learn Code By Gaming.
 # Go check him out ! https://www.youtube.com/c/LearnCodeByGaming
@@ -115,16 +117,15 @@ while True:
     # cv.imshow('Processed screen', processed_images[room])
 
     # Display result image
-    cv.imshow('Tracking screen', cv.resize(screenshot, (1280, 720)))
+    # cv.imshow('Tracking screen', cv.resize(screenshot, (1280, 720)))
 
     # Meeting detected
-    # Press 'a' to simulate this scenario
-    if cv.waitKey(1) == ord('a'):
+    # Press 't' to simulate this scenario
+    if keyboard.is_pressed('t'):
         time_now = time()
         for color in colors:
             if timings[color]:
                 last_seen[color] = time_now - timings[color]
-        print(last_seen)
         break
 
 # Print last positions of encountered players.
@@ -141,5 +142,11 @@ for color in colors:
             print(f'{color} last seen {int(last_seen[color])} seconds ago.')
     else:
         print(f'{color} not seen.')
+
+actual_map = Map(positions, last_seen)
+actual_map.set_markers()
+actual_map.display_markers()
+actual_map.display_map()
+
 
 print('Done.')
