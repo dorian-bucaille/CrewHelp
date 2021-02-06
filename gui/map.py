@@ -1,7 +1,7 @@
 import cv2 as cv
+import cons.cst
 
-
-# Used to display the map
+# Class used to display the map and trackers.
 class Map:
     marker_positions = {
         "cafeteria": (730, 191),
@@ -48,7 +48,7 @@ class Map:
 
     # Display the map
     def display_map(self):
-        cv.imshow('Map', self.map)
+        cv.imshow('CrewHelp map', self.map)
         cv.waitKey(0)  # waits until a key is pressed
         cv.destroyAllWindows()  # destroys the window showing image
 
@@ -87,4 +87,4 @@ class Map:
                     # Display text
                     cv.putText(self.map, color + ' : ' + str(int(self.last_seen[color])) + 's',
                                (self.markers[color][0], self.markers[color][1] + y_shift*tmp[self.markers[color]]),
-                               cv.FONT_HERSHEY_PLAIN, 1.1, (0, 255, 0), 1, cv.LINE_AA)
+                               cv.FONT_HERSHEY_PLAIN, 1.1, cons.cst.bgr_colors[color], 1, cv.LINE_AA)
