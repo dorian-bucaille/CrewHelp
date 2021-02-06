@@ -1,7 +1,7 @@
 import cv2 as cv
 
 
-# Used to display the map
+# Class used to display the map and trackers.
 class Map:
     marker_positions = {
         "cafeteria": (730, 191),

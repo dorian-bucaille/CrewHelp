@@ -45,10 +45,16 @@ for color in colors:
 
 # Initialize room trackers
 for room in rooms:
-    trackers[room] = Vision('img/' + room + '.png')
+    trackers.update({room: Vision('img/' + room + '.png')})
     processed_images.update({room: None})
     rectangles.update({room: None})
     points.update({room: None})
+
+
+# Initialize meeting detector
+trackers.update({'meeting': Vision('img/meeting.png')})
+processed_images.update({'meeting': None})
+rectangles.update({'meeting': None})
 
 # Threshold adjustments for specific colors
 thresholds["green"] = 0.4
@@ -77,12 +83,27 @@ filters = {
     "brown": HsvFilter(6, 184, 0, 18, 255, 255, 0, 0, 0, 0),
     "cyan": HsvFilter(83, 198, 0, 95, 255, 255, 0, 0, 0, 0),
     "lime": HsvFilter(52, 182, 0, 70, 255, 255, 0, 0, 0, 0),
-    "room": HsvFilter(0, 0, 0, 0, 0, 255, 0, 0, 0, 0)
+    "room": HsvFilter(0, 0, 0, 0, 0, 255, 0, 0, 0, 0),
+    "meeting": HsvFilter(0, 0, 209, 179, 255, 255, 0, 0, 0, 0)
 }
+
+# trackers['meeting'].init_control_gui()
+
+
+# Return True if an event has been triggered
+def meeting_detected(screencapture, tracker, imgfilter, threshold=0.5):
+    processed = tracker.apply_hsv_filter(screencapture, imgfilter)
+    rectangle = tracker.find(processed, threshold=threshold, max_results=1)
+    if len(rectangle):
+        return True
+    else:
+        return False
+
+
 
 while True:
     current_room = None
-    # filters["room"] = trackers["room"].get_hsv_filter_from_controls()
+    # filters["meeting"] = trackers["meeting"].get_hsv_filter_from_controls()
 
     # Get current frame and resize it so the process is faster
     screenshot = amongus_screenshot.get_screenshot(256, 144)
@@ -114,14 +135,19 @@ while True:
                        0.7, (0, 255, 0), 1, cv.LINE_AA)
 
     # Display processed image
-    # cv.imshow('Processed screen', processed_images[room])
+    # processed_images['meeting'] = trackers['meeting'].apply_hsv_filter(screenshot,
+    #                                                                       filters['meeting'])
+    # cv.imshow('Processed screen', processed_images['meeting'])
 
     # Display result image
-    # cv.imshow('Tracking screen', cv.resize(screenshot, (1280, 720)))
+    #
 
-    # Meeting detected
-    # Press 't' to simulate this scenario
-    if keyboard.is_pressed('t'):
+    # Meeting detection
+    if meeting_detected(screenshot, trackers['meeting'], filters['meeting'], threshold=0.5):
+        print("Meeting detected !")
+    # Press 'q' to simulate this scenario
+    # if cv.waitKey(1) == ord('q'):
+        cv.destroyAllWindows()
         time_now = time()
         for color in colors:
             if timings[color]:
@@ -147,6 +173,5 @@ actual_map = Map(positions, last_seen)
 actual_map.set_markers()
 actual_map.display_markers()
 actual_map.display_map()
-
 
 print('Done.')
