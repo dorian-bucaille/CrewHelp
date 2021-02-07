@@ -1,16 +1,19 @@
 import cv2 as cv
+from PyQt5.QtCore import QEventLoop
+
 from visionhsv import Vision
 from gamecapture import GameCapture
-from time import time, sleep
+from time import time
 import cons.cst
 import gui.qtmap
+import gui.qtgui
 import threading
+import sys
 
 # Debugging parameters
 detectionscreen = False  # Display detection screen
 processedscreen = None  # Display processed image
 hsv_sliders = False  # Display GUI for HSV processing
-
 
 # Create and initialize variables
 colors = cons.cst.colors
@@ -73,7 +76,6 @@ init_trackers(colors, pos=True)
 init_trackers(rooms)
 init_trackers('meeting')
 
-
 # Set detection thresholds
 thresholds = cons.cst.thresholds
 
@@ -90,14 +92,12 @@ amongus_screenshot = GameCapture('Among Us')
 # We are doing this because recording game windows does not work with the win32 library (freezes on first frame)
 amongus_screenshot.get_window_handle()
 
-
 # Init HSV GUI
 if hsv_sliders:
     trackers[processedscreen].init_control_gui()
 
 
 def main_program():
-
     # Initialize color, room and meeting trackers
     init_trackers(colors, pos=True)
     init_trackers(rooms)
@@ -173,6 +173,114 @@ def main_program():
     gui.qtmap.display(positions, last_seen)
     print("--- Map closed ---\n")
 
+
+app = gui.qtgui.QtWidgets.QApplication(sys.argv)
+MainWindow = gui.qtgui.QtWidgets.QMainWindow()
+MainWindow.loop = QEventLoop()
+ui = gui.qtgui.Ui_MainWindow()
+ui.setupUi(MainWindow)
+MainWindow.show()
+sys.exit(app.exec_())
+
+'''
+global state
+state = 0
+
+# Display GUI
+display_thread = threading.Thread(target=gui.qtgui.display())
+display_thread.start()
+'''
+'''app = gui.qtgui.QtWidgets.QApplication(sys.argv)
+MainWindow = gui.qtgui.QtWidgets.QMainWindow()
+ui = gui.qtgui.Ui_MainWindow()
+ui.setupUi(MainWindow)
+MainWindow.show()
+sys.exit(app.exec_())
+'''
+
+'''
+state = 1  # GUI Displayed
+
+
+def state(current_state):
+    # If start button has been clicked
+    if ui.start_is_clicked:
+        ui.stop_is_clicked = False  # Reset stop button
+        return 2  # Start button clicked
+
+    # If stop button has been clicked
+    if ui.stop_is_clicked and current_state == 2:
+        ui.start_is_clicked = False  # Reset start button
+        return 3  # Stop button clicked
+
+
+while True:
+
+    # Initiale state
+    if state == 0:
+        # Display GUI
+        app = gui.qtgui.QtWidgets.QApplication(sys.argv)
+        MainWindow = gui.qtgui.QtWidgets.QMainWindow()
+        ui = gui.qtgui.Ui_MainWindow()
+        ui.setupUi(MainWindow)
+        MainWindow.show()
+
+    # GUI is displayed, waiting for a click on start button
+    if state == 1:
+        # Start button has been clicked
+        if state(state) == 2:
+            print('Starting program')
+            main_loop_thread = threading.Thread(target=main_program)
+            main_loop_thread.start()
+            main_loop_thread.join()
+
+    # Stop button has been clicked, go back to state 1
+    if state(state) == 3:
+        state = 1
+
+'''
+'''
+# Constantly checks if start button is pressed
+def startreader(ui):
+    if ui.start_is_clicked:
+        ui.start_is_clicked = False
+        return True
+
+
+startreader_thread = threading.Thread(target=startreader)
+while True:
+    startclicked(ui)
+
+# Main program
+app = gui.qtgui.QtWidgets.QApplication(sys.argv)
+MainWindow = gui.qtgui.QtWidgets.QMainWindow()
+ui = gui.qtgui.Ui_MainWindow()
+ui.setupUi(MainWindow)
+MainWindow.show()
+while True:
+    if ui.start_is_clicked:
+        print("Start button pressed. Starting thread...\n")
+        while True:
+            main_loop_thread = threading.Thread(target=main_program)
+            main_loop_thread.start()
+            if ui.stop_is_clicked:
+                print('Stop button pressed. Ending loop.')
+                break
+            main_loop_thread.join()
+    sys.exit(app.exec_())
+'''
+
+'''
+# Main program
+gui_thread = threading.Thread(target=gui.qtgui.display())
+loop_thread = threading.Thread(target=loop)
+print('Loading GUI...\n')
+gui_thread.start()
+print('GUI started.\n')
+print('Loading loop...\n')
+loop_thread.start()
+print('Loop started.\n')
+'''
 
 while True:
     main_loop_thread = threading.Thread(target=main_program)
