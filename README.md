@@ -16,8 +16,11 @@ Right now only basic player detection is possible. Here are some screenshots of 
 - [x] Display a map with players' positions and timings
 - [x] Show up the map when meetings occur
 - [x] Clean code up
-- [ ] Improve map display using QT
+- [x] Display map using QT
 - [ ] Performance improvements with multithreading
+- [ ] Improve overall program ergonomics like map fonts, marker positions, etc.
+- [ ] Create an executable
+- [ ] Make a first release
 - [ ] Advanced player detection with ML (optional)
 
 ## Other
