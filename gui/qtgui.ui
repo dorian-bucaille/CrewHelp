@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>500</width>
+    <height>500</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>500</width>
+    <height>500</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>500</width>
+    <height>500</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>CrewHelp Menu</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QLabel" name="logo">
+    <property name="geometry">
+     <rect>
+      <x>87</x>
+      <y>0</y>
+      <width>325</width>
+      <height>325</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>img/icon.png</pixmap>
+    </property>
+   </widget>
+   <widget class="QLabel" name="background">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>500</width>
+      <height>500</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>img/guibackground.png</pixmap>
+    </property>
+   </widget>
+   <widget class="QLabel" name="logo_text">
+    <property name="geometry">
+     <rect>
+      <x>145</x>
+      <y>335</y>
+      <width>209</width>
+      <height>79</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>img/crewhelp.png</pixmap>
+    </property>
+   </widget>
+   <widget class="QLabel" name="speaker">
+    <property name="geometry">
+     <rect>
+      <x>15</x>
+      <y>15</y>
+      <width>54</width>
+      <height>53</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>img/speakeron.png</pixmap>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="start_button">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>431</y>
+      <width>97</width>
+      <height>48</height>
+     </rect>
+    </property>
+    <property name="cursor">
+     <cursorShape>PointingHandCursor</cursorShape>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#start_button​ {
+background-color: transparent;
+border-image: url(:../gui/img/start.png);
+background: none;
+border: none;
+background-repeat: none;
+}
+#upLeft​:pressed
+{
+   border-image: url(:../gui/img/started.png);
+}</string>
+    </property>
+    <property name="text">
+     <string>Start</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="speaker_button">
+    <property name="geometry">
+     <rect>
+      <x>15</x>
+      <y>15</y>
+      <width>54</width>
+      <height>53</height>
+     </rect>
+    </property>
+    <property name="cursor">
+     <cursorShape>PointingHandCursor</cursorShape>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#start_button​ {
+background-color: transparent;
+border-image: url(:../gui/img/speaker.png);
+background: none;
+border: none;
+background-repeat: none;
+}</string>
+    </property>
+    <property name="text">
+     <string>Speaker</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="stop_button">
+    <property name="geometry">
+     <rect>
+      <x>363</x>
+      <y>430</y>
+      <width>97</width>
+      <height>48</height>
+     </rect>
+    </property>
+    <property name="cursor">
+     <cursorShape>PointingHandCursor</cursorShape>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#start_button​ {
+background-color: transparent;
+border-image: url(:../gui/img/stop.png);
+background: none;
+border: none;
+background-repeat: none;
+}
+</string>
+    </property>
+    <property name="text">
+     <string>Stop</string>
+    </property>
+   </widget>
+   <zorder>background</zorder>
+   <zorder>logo</zorder>
+   <zorder>logo_text</zorder>
+   <zorder>speaker</zorder>
+   <zorder>start_button</zorder>
+   <zorder>speaker_button</zorder>
+   <zorder>stop_button</zorder>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

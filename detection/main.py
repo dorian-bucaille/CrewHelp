@@ -1,16 +1,16 @@
 import cv2 as cv
 from visionhsv import Vision
 from gamecapture import GameCapture
-from time import time, sleep
+from time import time
 import cons.cst
 import gui.qtmap
+import gui.qtgui
 import threading
 
 # Debugging parameters
 detectionscreen = False  # Display detection screen
 processedscreen = None  # Display processed image
 hsv_sliders = False  # Display GUI for HSV processing
-
 
 # Create and initialize variables
 colors = cons.cst.colors
@@ -73,7 +73,6 @@ init_trackers(colors, pos=True)
 init_trackers(rooms)
 init_trackers('meeting')
 
-
 # Set detection thresholds
 thresholds = cons.cst.thresholds
 
@@ -90,14 +89,12 @@ amongus_screenshot = GameCapture('Among Us')
 # We are doing this because recording game windows does not work with the win32 library (freezes on first frame)
 amongus_screenshot.get_window_handle()
 
-
 # Init HSV GUI
 if hsv_sliders:
     trackers[processedscreen].init_control_gui()
 
 
 def main_program():
-
     # Initialize color, room and meeting trackers
     init_trackers(colors, pos=True)
     init_trackers(rooms)

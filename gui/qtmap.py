@@ -29,8 +29,20 @@ class Ui_MainWindow(object):
         MainWindow.setMaximumSize(QtCore.QSize(1366, 768))
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
+
+        # Draw black bg
+        self.bg = QtWidgets.QLabel(self.centralwidget)
+        self.bg.setGeometry(QtCore.QRect(0, 0, 1366, 768))
+        self.bg.setMinimumSize(QtCore.QSize(1366, 768))
+        self.bg.setMaximumSize(QtCore.QSize(1366, 768))
+        self.bg.setText("")
+        self.bg.setPixmap(QtGui.QPixmap(r"../gui/img/bg.png"))
+        self.bg.setScaledContents(True)
+        self.bg.setObjectName("bg")
+
+        # Draw map
         self.map = QtWidgets.QLabel(self.centralwidget)
-        self.map.setGeometry(QtCore.QRect(10, 20, 1366, 768))
+        self.map.setGeometry(QtCore.QRect(0, 0, 1366, 768))
         self.map.setMinimumSize(QtCore.QSize(1366, 768))
         self.map.setMaximumSize(QtCore.QSize(1366, 768))
         self.map.setText("")
@@ -38,44 +50,17 @@ class Ui_MainWindow(object):
         self.map.setScaledContents(True)
         self.map.setObjectName("map")
 
-        '''
-        self.marker = QtWidgets.QLabel(self.centralwidget)
-        self.marker.setGeometry(QtCore.QRect(710, 170, 50, 42))
-        self.marker.setMinimumSize(QtCore.QSize(50, 42))
-        self.marker.setMaximumSize(QtCore.QSize(50, 42))
-        self.marker.setText("")
-        self.marker.setPixmap(QtGui.QPixmap("../gui/img/marker_red.png"))
-        self.marker.setScaledContents(True)
-        self.marker.setObjectName("marker")
-        self.marker_time = QtWidgets.QLabel(self.centralwidget)
-        self.marker_time.setGeometry(QtCore.QRect(710, 220, 47, 13))
-        font = QtGui.QFont()
-        font.setFamily("Arial")
-        font.setPointSize(11)
-        font.setBold(True)
-        font.setWeight(75)
-        font.setKerning(True)
-        self.marker_time.setFont(font)
-        self.marker_time.setAlignment(QtCore.Qt.AlignCenter)
-        self.marker_time.setObjectName("marker_time")
-        self.marker_time.setText("7s")
-        '''
         MainWindow.setCentralWidget(self.centralwidget)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
-        MainWindow.setWindowTitle("CrewHelp")
+        MainWindow.setWindowTitle("CrewHelp - Map")
         MainWindow.setWindowIcon(QIcon('../gui/img/icon.png'))
 
         # self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("CrewHelp", "CrewHelp"))
+        MainWindow.setWindowTitle("CrewHelp - Map")
         MainWindow.setWindowIcon(QIcon('../gui/img/icon.png'))
-        self.marker_time.setText(_translate("MainWindow", "7s"))
 
     def set_attributes(self, player_positions, player_last_seen):
         self.positions = player_positions
@@ -103,7 +88,7 @@ class Ui_MainWindow(object):
 
                 # If it's the first time looping on this room then create a key for it
                 if self.markers[color] not in tmp:
-                    tmp.update({self.markers[color]: 1})
+                    tmp.update({self.markers[color]: 0})
 
                 # Otherwise increment the count for this room
                 else:
@@ -111,37 +96,33 @@ class Ui_MainWindow(object):
 
                 # display marker at position
                 self.marker_labels[color] = QtWidgets.QLabel(self.centralwidget)
-                self.marker_labels[color].setGeometry(QtCore.QRect(self.markers[color][0] + x_shift * tmp[
-                                                                       self.markers[color]],
+                self.marker_labels[color].setGeometry(QtCore.QRect(self.markers[color][0] - 8 + x_shift * tmp[
+                    self.markers[color]],
                                                                    self.markers[color][1],
-                                                                   50, 42))
+                                                                   50, 66))
                 self.marker_labels[color].setPixmap(QtGui.QPixmap(r'../gui/img/marker_' + color + '.png'))
                 self.marker_labels[color].setScaledContents(True)
 
                 # Display timings
                 if time:
                     # Display text
+
+                    # White text
                     self.marker_texts[color] = QtWidgets.QLabel(self.centralwidget)
                     self.marker_texts[color].setGeometry(QtCore.QRect(self.markers[color][0] + x_shift * tmp[
-                                                                       self.markers[color]],
-                                                                      self.markers[color][1] + 42,
-                                                                      47, 13))
+                        self.markers[color]],
+                                                                      self.markers[color][1] + 55,
+                                                                      47, 20))
                     font = QtGui.QFont()
                     font.setFamily("Arial")
-                    font.setPointSize(11)
-                    font.setBold(True)
+                    font.setPointSize(14)
+                    font.setBold(False)
                     font.setWeight(75)
                     font.setKerning(True)
                     self.marker_texts[color].setFont(font)
                     self.marker_texts[color].setAlignment(QtCore.Qt.AlignCenter)
-                    self.marker_texts[color].setText(str(int(self.last_seen[color])))
-
-                    '''
-                    cv.putText(self.map, color + ' : ' + str(int(self.last_seen[color])) + 's',
-                               (
-                                   self.markers[color][0], self.markers[color][1] + y_shift * tmp[self.markers[color]]),
-                               cv.FONT_HERSHEY_PLAIN, 1.1, cons.cst.bgr_colors[color], 1, cv.LINE_AA)
-                    '''
+                    self.marker_texts[color].setText('<font color=' + "'" + 'white' + "'" + '>' +
+                                                     str(int(self.last_seen[color])) + 's</font>')
 
 
 # Display window
