@@ -155,7 +155,6 @@ def display(player_positions, player_last_seen):
     ui.set_markers()
     ui.display_markers()
     main_window.show()
-
     sys.exit(app.exec_())
 
 
