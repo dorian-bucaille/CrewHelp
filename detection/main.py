@@ -147,9 +147,9 @@ def main_program():
                 if hsv_sliders:
                     filters[processedscreen] = trackers[processedscreen].get_hsv_filter_from_controls()
                 processed = trackers[processedscreen].apply_hsv_filter(screenshot, filters[processedscreen])
-                cv.imshow('CrewHelp processed screen', processed)
+                cv.imshow('CrewHelp processed screen', cv.resize(processed, (1176, 664)))
                 cv.waitKey(1)
-            cv.imshow('CrewHelp tracking screen', cv.resize(screenshot, (1280, 720)))
+            cv.imshow('CrewHelp tracking screen', cv.resize(screenshot, (1176, 664)))
             cv.waitKey(1)
 
         # Get out of loop if a meeting is detected
