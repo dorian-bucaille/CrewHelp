@@ -56,10 +56,10 @@ thresholds = {
 # TODO test if those are good
 marker_positions = {
     "cafeteria": (716, 150),  # OK
-    "medbay": (455, 356),
-    "upper_engine": (200, 204),
-    "reactor": (77, 390),
-    "security": (342, 375),
+    "medbay": (455, 320),  # OK
+    "upper_engine": (200, 198),  # OK
+    "reactor": (73, 366),  # OK
+    "security": (340, 366),  # OK
     "lower_engine": (185, 576),
     "electrical": (455, 500),
     "storage": (616, 576),

@@ -9,13 +9,14 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import pyqtSignal, QEventLoop
 from PyQt5.QtGui import QIcon
-
+import sys
 
 class Ui_MainWindow(object):
 
-    start = pyqtSignal()
+    start = False
+    speaker = False
 
 
     def setupUi(self, MainWindow):
@@ -109,27 +110,29 @@ class Ui_MainWindow(object):
 
     def start_clicked(self):
         print('start clicked')
-        self.start_is_clicked.emit()
+        maincopy.fullprgm()
+        self.start = True
 
     def stop_clicked(self):
         print('stop clicked')
-        self.stop_is_clicked.emit()
+        self.start = False
 
     def speaker_clicked(self):
         print('speaker clicked')
-        self.speaker_is_clicked = True
+        self.speaker = True
 
 
 def display():
     import sys
     app = QtWidgets.QApplication(sys.argv)
+
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
+
+
     MainWindow.show()
     sys.exit(app.exec_())
-
-
 
 if __name__ == "__main__":
     import sys
@@ -139,4 +142,6 @@ if __name__ == "__main__":
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
+    if ui.start:
+        print('test')
     sys.exit(app.exec_())
