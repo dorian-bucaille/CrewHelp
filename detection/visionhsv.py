@@ -1,6 +1,6 @@
 import cv2 as cv
 import numpy as np
-from hsvfilter import HsvFilter
+from detection.hsvfilter import HsvFilter
 
 
 # Modified class, originally written by Ben from Learn Code By Gaming.
