@@ -1,9 +1,14 @@
+import sys
+
 import cv2 as cv
+from PyQt5.uic.properties import QtWidgets
+
 from visionhsv import Vision
 from gamecapture import GameCapture
 from time import time
-from gui.map import Map
+# from gui.map import Map
 import cons.cst
+import gui.qtmap
 
 # Debugging parameters
 detectionscreen = False  # Display detection screen
@@ -153,9 +158,6 @@ while True:
 print_positions()
 
 # Display map and markers
-actual_map = Map(positions, last_seen)
-actual_map.set_markers()
-actual_map.display_markers()
-actual_map.display_map()
+gui.qtmap.display(positions, last_seen)
 
 exit(0)

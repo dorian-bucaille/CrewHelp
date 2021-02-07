@@ -44,11 +44,29 @@ thresholds = {
     "pink": 0.4,
     "orange": 0.4,  # OK
     "yellow": 0.53,  # OK but not 100% accurate. Had to lower threshold because of empty bin storage task.
-    "black": 0.5,  # OK
+    "black": 0.5,  # Not OK (reactor)
     "white": 0.4,
     "purple": 0.4,
     "brown": 0.45,  # OK
     "cyan": 0.45,
     "lime": 0.3,  # OK
     "room": 0.72  # OK
+}
+
+# TODO change those
+marker_positions = {
+    "cafeteria": (730, 191),
+    "medbay": (435, 280),
+    "upper_engine": (185, 210),
+    "reactor": (68, 388),
+    "security": (329, 379),
+    "lower_engine": (185, 576),
+    "electrical": (455, 500),
+    "storage": (616, 576),
+    "admin": (818, 440),
+    "communications": (806, 651),
+    "shields": (965, 593),
+    "navigation": (1210, 374),
+    "o2": (900, 308),
+    "weapons": (965, 156),
 }
