@@ -38,7 +38,7 @@ Color recognition is not 100% accurate but can track most of the crewmates with 
 - [ ] Publish a first release
 - [ ] Advanced player detection with ML
 
-# Resources
+## Resources
 Python, Qt and OpenCV are used in this project. This script would not exist without the excellent work of Ben from Learn Code By Gaming. Go [check him out !](https://www.youtube.com/c/LearnCodeByGaming)
 
 ## Other
