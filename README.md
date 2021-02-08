@@ -44,4 +44,4 @@ Python, Qt and OpenCV are used in this project. This script would not exist with
 ## Other
 I'm fully aware that image recognition is absolutely not the best way to track players in Among Us. This project is mainly a way for me to learn new techniques and technologies in Python.
 
-__I do not encourage people to cheat in online games and am not responsible for any abuse. Do not use this script in online games__.
+__I do not encourage people to cheat in online games and am not responsible for any abuse. Do not use this script in public games__.
