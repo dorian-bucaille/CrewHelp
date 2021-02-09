@@ -1,8 +1,5 @@
 <p align="center">
-  <img src="https://github.com/dorian-bucaille/CrewHelp/blob/main/gui/img/icon.png?raw=true" alt="CrewHelp logo">
-</p>
-<p align="center">
-  <img src="https://github.com/dorian-bucaille/CrewHelp/blob/main/gui/img/crewhelp.png?raw=true" alt="CrewHelp logo">
+  <img src="https://github.com/dorian-bucaille/CrewHelp/blob/main/illustration/repo_illus.png?raw=true" alt="CrewHelp illustration">
 </p>
 
 # What does this tool do ?
