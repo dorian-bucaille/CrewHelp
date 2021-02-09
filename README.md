@@ -38,6 +38,7 @@ Color recognition is not 100% accurate but can track most of the crewmates with 
 
 # To improve...
 - [ ] Overall program ergonomics like map fonts, marker positions, etc.
+- [ ] Manage logging
 - [ ] Create an executable
 - [ ] Publish a first release
 - [ ] Advanced player detection with ML
