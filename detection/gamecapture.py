@@ -32,7 +32,7 @@ class GameCapture:
             self.handle = win32gui.FindWindow(None, window_name)
         if not self.handle:
             print(f'{window_name} window was not found. Check if it is currently opened and retry.')
-            raise Exception(f'{window_name}NotFound')
+            raise FileNotFoundError
         return self.handle
 
     # Set the window coordinates and size
